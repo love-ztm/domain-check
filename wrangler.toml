@@ -1,12 +1,12 @@
 name = "domain-check"
 main = "src/index.js"
-compatibility_date = "2025-11-17"
+compatibility_date = "2025-11-21"
 keep_vars = true
 
 # KV 命名空间绑定 (必须)
 [[kv_namespaces]]
-binding = "DOMAIN_KV" 
-id = "ae781b92d2c14a55a32f7b094beb9ade" # 替换成你实际的 KV ID
+binding = "qy-ymjk" 
+id = "68ab4de3801a41a2bb0fa3b2469fb4b3" # 替换成你实际的 KV ID
 
 # Cron Triggers 定时任务
 [triggers]
