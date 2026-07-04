@@ -6,6 +6,17 @@ export const HTML_CSS = `
                  sans-serif;
 }
 
+:root {
+    --primary: #186db3;
+    --primary-hover: #1c5a8a;
+    --primary-bg-light: rgba(24, 109, 179, 0.20);
+    --danger: #e74c3c;
+    --danger-hover: #c0392b;
+    --text-color: #333;
+    --text-secondary: #555;
+    --border-color: #ccc;
+}
+
 /* 顶部标题和操作按钮 */
 .header {
     display: flex;
@@ -40,16 +51,16 @@ export const HTML_CSS = `
 }
 .export-btn, .import-btn { background-color: #1eaf5b; color: white; }
 .export-btn:hover, .import-btn:hover { background-color: #1c914d; }
-.add-btn { background-color: #186db3; color: white; }
-.add-btn:hover { background-color: #1c5a8a; }
-.login-btn { background-color: #186db3; color: white; }
-.login-btn:hover { background-color: #1c5a8a; }
-.logout-btn { background-color: #e74c3c; color: white; }
-.logout-btn:hover { background-color: #c0392b; }
+.add-btn { background-color: var(--primary); color: white; }
+.add-btn:hover { background-color: var(--primary-hover); }
+.login-btn { background-color: var(--primary); color: white; }
+.login-btn:hover { background-color: var(--primary-hover); }
+.logout-btn { background-color: var(--danger); color: white; }
+.logout-btn:hover { background-color: var(--danger-hover); }
 .select-btn { background-color: #8e44ad; color: white; }
 .select-btn:hover { background-color: #7d3c9a; }
-.del-btn { background-color: #e74c3c; color: white; }
-.del-btn:hover { background-color: #c0392b; }
+.del-btn { background-color: var(--danger); color: white; }
+.del-btn:hover { background-color: var(--danger-hover); }
 
 /* 概览卡片样式 */
 .summary-container {
@@ -117,7 +128,7 @@ export const HTML_CSS = `
     transition: background-color 0.3s, border-color 0.3s;
     border: none;
 }
-.tab-btn.active { background-color: #186db3; color: white; }
+.tab-btn.active { background-color: var(--primary); color: white; }
 .search-container {
     display: flex;
     align-items: center;
@@ -163,22 +174,22 @@ export const HTML_CSS = `
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid rgba(24, 109, 179, 0.3);
     padding-bottom: 10px;
 }
 .card-domain {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #186db3;
+    color: var(--primary);
     cursor: pointer;
     word-break: break-all;
     transition: color 0.3s ease;
 }
-.card-domain:hover { color: #1c5a8a; }
+.card-domain:hover { color: var(--primary-hover); }
 .card-domain-masked {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #555;
+    color: var(--text-secondary);
     word-break: break-all;
 }
 .card-status {
@@ -190,12 +201,32 @@ export const HTML_CSS = `
     line-height: 0.95;
     background-color: var(--status-color);
 }
+.group-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    margin: 1px 2px;
+    border-radius: 50px;
+    color: var(--primary);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    background-color: var(--primary-bg-light);
+    white-space: nowrap;
+}
+.group-tag.tag-ungrouped {
+    background-color: rgba(150, 150, 150, 0.25);
+    color: var(--text-secondary);
+}
+.group-tags-container {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
 .card-info p {
     margin: 5px 0;
     font-size: 0.8rem;
 }
 .card-info strong {
-    color: #333;
+    color: var(--text-color);
     font-weight: normal;
 }
 .card-info a {
@@ -207,7 +238,7 @@ export const HTML_CSS = `
 }
 .card-footer {
     margin-top: auto;
-    padding-top: 15px;
+    padding-top: 8px;
 }
 .progress-bar-container {
     background-color: rgba(255, 255, 255, 0.35);
@@ -227,7 +258,7 @@ export const HTML_CSS = `
     top: 50%;
     transform: translateY(-50%);
     font-size: 0.75rem;
-    color: #333;
+    color: var(--text-color);
     line-height: 1;
     z-index: 2;
 }
@@ -236,7 +267,7 @@ export const HTML_CSS = `
     text-align: center;
     margin-top: 5px;
     font-weight: bold;
-    color: #555;
+    color: var(--text-secondary);
 }
 
 /* 卡片操作按钮区域 */
@@ -264,13 +295,15 @@ export const HTML_CSS = `
     width: 18px;
     height: 18px;
     cursor: pointer;
-    accent-color: #186db3;
+    accent-color: var(--primary);
     flex-shrink: 0;
 }
-.edit-icon { color: #186db3; }
-.edit-icon:hover { color: #1c5a8a; }
-.delete-icon { color: #e74c3c; }
-.delete-icon:hover { color: #c0392b; }
+.edit-icon { color: var(--primary); }
+.edit-icon:hover { color: var(--primary-hover); }
+.renew-icon { color: #27ae60; }
+.renew-icon:hover { color: #1e8449; }
+.delete-icon { color: var(--danger); }
+.delete-icon:hover { color: var(--danger-hover); }
 .copy-icon { color: #8e44ad; }
 .copy-icon:hover { color: #7d3c9a; }
 
@@ -293,8 +326,13 @@ export const HTML_CSS = `
     border-radius: 8px;
 }
 .page-btn.active {
-    background-color: #186db3;
+    background-color: var(--primary);
     color: white;
+}
+.page-dots {
+    padding: 8px 6px;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
 }
 
 /* Modal 样式 */
@@ -310,10 +348,12 @@ export const HTML_CSS = `
     display: none;
 }
 .modal-content {
-    background-color: #fefefe;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border: 1px solid rgba(255,255,255,0.3);
     width: 80%;
     max-width: 500px;
     border-radius: 8px;
@@ -341,7 +381,7 @@ export const HTML_CSS = `
     padding: 10px;
     margin: 5px 0 15px 0;
     display: inline-block;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     box-sizing: border-box;
 }
@@ -354,10 +394,114 @@ export const HTML_CSS = `
     margin-bottom: 10px;
     min-height: 18px;
 }
+
+/* 分组标签选择器 */
+.groups-field {
+    margin: 5px 0 15px 0;
+}
+.groups-tag-list {
+    display: none;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+    min-height: 0;
+}
+.groups-tag-list.has-tags {
+    display: flex;
+    margin-bottom: 6px;
+}
+.groups-tag-list .group-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px 2px 8px;
+    margin: 0;
+    font-size: 0.75rem;
+    background-color: var(--primary-bg-light);
+    border-radius: 50px;
+    color: var(--primary);
+    line-height: 1.5;
+}
+.group-tag-remove {
+    cursor: pointer;
+    font-size: 0.85rem;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+.group-tag-remove:hover {
+    opacity: 1;
+}
+.groups-input-wrap {
+    position: relative;
+}
+.groups-input-wrap input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    margin: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    outline: none;
+}
+.groups-input-wrap input[type="text"]:focus {
+    border-color: var(--primary);
+}
+.groups-arrow, .autocomplete-arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #999;
+    font-size: 0.7rem;
+}
+
+/* 注册商下拉选择器 */
+.autocomplete-field {
+    position: relative;
+    margin: 5px 0 15px 0;
+}
+.autocomplete-field input[type="text"],
+.autocomplete-field input[type="url"] {
+    width: 100%;
+    padding: 10px 30px 10px 10px !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+}
+.autocomplete-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 160px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    z-index: 10;
+}
+.autocomplete-dropdown-item {
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    line-height: 1.3;
+    transition: background-color 0.15s;
+}
+.autocomplete-dropdown-item:hover {
+    background-color: #e8f0fe;
+    color: var(--primary);
+}
+
 .modal-content button[type="submit"] {
-    background-color: #186db3;
+    background-color: var(--primary);
+    font-size: 16px;
     color: white;
-    padding: 14px 20px;
+    padding: 10px 20px;
     margin: 8px 0;
     border: none;
     cursor: pointer;
@@ -367,7 +511,7 @@ export const HTML_CSS = `
 
 .footer {
     background-color: none;
-    color: #333333;
+    color: var(--text-color);
     font-size: 0.8rem;
     width: 100%;
     text-align: center;
@@ -383,13 +527,13 @@ export const HTML_CSS = `
     margin: 0;
 }
 .footer a {
-    color: #333333;
+    color: var(--text-color);
     text-decoration: none;
     transition: color 0.3s ease;
     white-space: nowrap;
 }
 .footer a:hover {
-    color: #186db3;
+    color: var(--primary);
 }
 
 /* --- 自定义提示框（替换 alert/confirm） --- */
@@ -408,7 +552,7 @@ export const HTML_CSS = `
     align-items: center;
 }
 .toast-card {
-    background: rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.85);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255,255,255,0.3);
@@ -431,10 +575,11 @@ export const HTML_CSS = `
 }
 .toast-message {
     font-size: 1rem;
-    color: #333;
+    color: var(--text-color);
     margin-bottom: 20px;
-    line-height: 1.5;
+    line-height: 2;
     word-break: break-word;
+    white-space: pre-line;
 }
 .toast-actions {
     display: flex;
@@ -454,18 +599,52 @@ export const HTML_CSS = `
     transform: scale(0.97);
 }
 .toast-btn-primary {
-    background-color: #186db3;
+    background-color: var(--primary);
     color: white;
 }
 .toast-btn-primary:hover {
-    background-color: #1c5a8a;
+    background-color: var(--primary-hover);
 }
 .toast-btn-cancel {
     background-color: #e0e0e0;
-    color: #555;
+    color: var(--text-secondary);
 }
 .toast-btn-cancel:hover {
-    background-color: #ccc;
+    background-color: var(--border-color);
+}
+
+/* 续费弹窗两行布局 */
+.renew-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+.renew-line:last-child {
+    margin-bottom: 20px;
+}
+.renew-line #renewDomainName {
+    font-weight: bold;
+}
+.renew-line input[type="number"] {
+    width: 160px;
+    padding: 6px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    text-align: center;
+}
+.renew-line select {
+    width: 80px;
+    padding: 6px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
 }
 
 /* --- 移动端优化 --- */
@@ -489,7 +668,8 @@ export const HTML_CSS = `
     .card-header { align-items: flex-start; gap: 5px; }
     .card-status { align-self: flex-start; }
 
-    .modal-content { margin: 5% auto; width: 90%; padding: 15px; }
+    .modal-content { margin: 6% auto; padding: 15px; }
+    .toast-card { margin: 20px; padding: 15px; }
 
     .footer p { font-size: 0.7rem; gap: 6px; }
 }

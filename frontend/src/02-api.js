@@ -96,6 +96,27 @@ function importData() {
     };
 }
 
+// 续费域名: PATCH /api/domains
+async function renewDomain(domain, duration, unit) {
+    try {
+        const response = await fetch(DOMAINS_API, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ domain, duration, unit }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: '续费失败' }));
+            throw new Error(errorData.error || response.statusText);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('续费失败:', error);
+        throw error;
+    }
+}
+
 // 批量删除选中的域名
 async function batchDeleteDomains(domains) {
     if (!domains || domains.length === 0) {
@@ -125,42 +146,50 @@ async function batchDeleteDomains(domains) {
         showError('批量删除失败: ' + error.message);
     }
 }
+// 域名排序逻辑
+function sortDomains(domains) {
+    return domains.sort((a, b) => {
+        if (lastOperatedDomain) {
+            if (a.domain === lastOperatedDomain) return -1;
+            if (b.domain === lastOperatedDomain) return 1;
+        }
+        const statusA = getDomainStatus(a.expirationDate).statusText;
+        const statusB = getDomainStatus(b.expirationDate).statusText;
+        const getStatusPriority = (status) => {
+            if (status === '已到期') return 1;
+            if (status === '将到期') return 2;
+            if (status === '正常') return 3;
+            return 4;
+        };
+        const priorityA = getStatusPriority(statusA);
+        const priorityB = getStatusPriority(statusB);
+        if (priorityA !== priorityB) { return priorityA - priorityB; }
+        if (priorityA === 3) {
+            const isPrimaryA = isPrimaryDomain(a.domain);
+            const isPrimaryB = isPrimaryDomain(b.domain);
+            if (isPrimaryA && !isPrimaryB) return -1;
+            if (!isPrimaryA && isPrimaryB) return 1;
+        }
+        const systemA = a.system || '';
+        const systemB = b.system || '';
+        return systemA.localeCompare(systemB);
+    });
+}
+
+function resetFiltersAndRender() {
+    lastOperatedDomain = null;
+    currentStatusFilter = '';
+    currentGroup = '全部';
+    renderGroupTabs();
+    applyFiltersAndSearch();
+}
+
 // 公开页面使用服务端注入的 INITIAL_DOMAINS（已脱敏），不调用 API
 async function fetchDomains() {
     // 公开页面：使用服务端注入的脱敏数据
     if (typeof INITIAL_DOMAINS !== 'undefined' && INITIAL_DOMAINS !== null) {
-        allDomains = INITIAL_DOMAINS.map(d => ({ ...d })).sort((a, b) => {
-            if (lastOperatedDomain) { 
-                if (a.domain === lastOperatedDomain) return -1;
-                if (b.domain === lastOperatedDomain) return 1;
-            }
-            const statusA = getDomainStatus(a.expirationDate).statusText;
-            const statusB = getDomainStatus(b.expirationDate).statusText;
-            const getStatusPriority = (status) => {
-                if (status === '已到期') return 1;
-                if (status === '将到期') return 2;
-                if (status === '正常') return 3;
-                return 4;
-            };
-            const priorityA = getStatusPriority(statusA);
-            const priorityB = getStatusPriority(statusB);
-            if (priorityA !== priorityB) { return priorityA - priorityB; }
-            if (priorityA === 3) {
-                const isPrimaryA = isPrimaryDomain(a.domain);
-                const isPrimaryB = isPrimaryDomain(b.domain);
-                if (isPrimaryA && !isPrimaryB) return -1;
-                if (!isPrimaryA && isPrimaryB) return 1;
-            }
-            const systemA = a.system || '';
-            const systemB = b.system || '';
-            return systemA.localeCompare(systemB);
-        });
-
-        lastOperatedDomain = null; 
-        currentStatusFilter = '';
-        currentGroup = '全部';
-        renderGroupTabs();
-        applyFiltersAndSearch();
+        allDomains = sortDomains(INITIAL_DOMAINS.map(d => ({ ...d })));
+        resetFiltersAndRender();
         return;
     }
 
@@ -170,41 +199,8 @@ async function fetchDomains() {
         if (!response.ok) throw new Error('获取域名失败');
         const data = await response.json();
 
-        allDomains = data.map(d => ({
-            ...d,
-        })).sort((a, b) => {
-            if (lastOperatedDomain) { 
-                if (a.domain === lastOperatedDomain) return -1;
-                if (b.domain === lastOperatedDomain) return 1;
-            }
-            const statusA = getDomainStatus(a.expirationDate).statusText;
-            const statusB = getDomainStatus(b.expirationDate).statusText;
-            const getStatusPriority = (status) => {
-                if (status === '已到期') return 1;
-                if (status === '将到期') return 2;
-                if (status === '正常') return 3;
-                return 4;
-            };
-            const priorityA = getStatusPriority(statusA);
-            const priorityB = getStatusPriority(statusB);
-            if (priorityA !== priorityB) { return priorityA - priorityB; }
-            if (priorityA === 3) {
-                const isPrimaryA = isPrimaryDomain(a.domain);
-                const isPrimaryB = isPrimaryDomain(b.domain);
-                if (isPrimaryA && !isPrimaryB) return -1;
-                if (!isPrimaryA && isPrimaryB) return 1;
-            }
-            const systemA = a.system || '';
-            const systemB = b.system || '';
-            return systemA.localeCompare(systemB);
-        });
-
-        lastOperatedDomain = null; 
-        currentStatusFilter = '';
-        currentGroup = '全部';
-        renderGroupTabs();
-        applyFiltersAndSearch();
-        
+        allDomains = sortDomains(data.map(d => ({ ...d })));
+        resetFiltersAndRender();
     } catch (error) {
         console.error('获取域名失败:', error);
         if (IS_ADMIN) {
@@ -295,7 +291,7 @@ async function deleteDomain(domain) {
         }
         
         const deletedCount = responseData.deletedCount || domainsToDelete.length;
-        showSuccess(`域名 ${domain} 已删除 (${deletedCount} 个记录被移除)`);
+        showSuccess(`域名 ${domain} 已删除！`);
 
         currentPage = 1;
         await fetchDomains();
