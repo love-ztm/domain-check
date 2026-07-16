@@ -48,7 +48,14 @@ export default {
         const config = getConfig(env);
         
         // ----- 公开端点（无需鉴权） -----
-        
+
+        // 微信恢复验证文件
+        if (pathname === '/7d62a754dddd5dfab3d3e71e696b50cf.txt') {
+            return new Response('22cefbbd7f28e191b52a9a18e035ee6288328060', {
+                headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+            });
+        }
+
         // 登录页
         if (pathname === '/login') {
             return handleLogin(request, env, '/admin');
